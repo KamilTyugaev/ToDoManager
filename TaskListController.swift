@@ -8,7 +8,13 @@
 import UIKit
 
 class TaskListController: UITableViewController {
-
+    // хранилище задач
+    var tasksStorage:TaskStorageProtocol = TaskStorage()
+    //коллекция задач
+    var tasks:[TaskPriority:[TaskProtocol]] = [:]
+    // порядок отображения секций по типам
+    // индекс в массиве соответствует индексу секции в таблице
+    var sectionTypesPriority:[TaskPriority] = [.important,.normal]
     override func viewDidLoad() {
         super.viewDidLoad()
 
