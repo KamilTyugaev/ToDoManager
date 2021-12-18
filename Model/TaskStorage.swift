@@ -6,16 +6,15 @@
 //
 
 import UIKit
+
 // Протокол, описывающий сущность "Хранилище задач"
-protocol TaskStorageProtocol {
+protocol TasksStorageProtocol {
     func loadTasks() -> [TaskProtocol]
     func saveTasks(_ tasks:[TaskProtocol])
 }
 
 // Сущность "Хранилище задач"
-class TaskStorage: TaskStorageProtocol {
-   
-    
+class TasksStorage: TasksStorageProtocol {
     func loadTasks() -> [TaskProtocol] {
             let testTask:[TaskProtocol] = [
                 Task(title: "write dz popsix", type: .important, status: .planned),

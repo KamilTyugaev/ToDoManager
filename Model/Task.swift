@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 // требования к типу, описывающему сущность "Задача"
 protocol TaskProtocol {
     var title: String { get set }
