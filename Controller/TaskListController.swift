@@ -14,7 +14,7 @@ class TaskListController: UITableViewController {
     var tasks: [TaskPriority:[TaskProtocol]] = [:]
     // порядок отображения секций по типам
     // индекс в массиве соответствует индексу секции в таблице
-    var sectionTypesPosition:[TaskPriority] = [.important,.normal]
+    var sectionTypesPosition:[TaskPriority] = [.important, .normal]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -96,6 +96,17 @@ class TaskListController: UITableViewController {
             resultSymbol = ""
         }
         return resultSymbol
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        var title: String?
+        let tasksType = sectionTypesPosition[section]
+        if tasksType == .important {
+            title = "Важные"
+        } else if tasksType == .normal {
+            title = "Текущие"
+        }
+        return title
     }
 
     /*
