@@ -29,9 +29,10 @@ enum TaskPriority{
 }
 
 //состояние задачи
-enum TaskStatus{
+enum TaskStatus:Int{
     //запланированная
     case planned
     //выполненная
     case completed
+    
 }

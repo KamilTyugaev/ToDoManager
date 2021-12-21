@@ -15,6 +15,7 @@ class TaskListController: UITableViewController {
     // порядок отображения секций по типам
     // индекс в массиве соответствует индексу секции в таблице
     var sectionTypesPosition:[TaskPriority] = [.important, .normal]
+    var tasksStatusPosition: [TaskStatus] = [.planned, .completed]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +34,13 @@ class TaskListController: UITableViewController {
         // загрузка и разбор задач из хранилища
         tasksStorage.loadTasks().forEach { task in
             tasks[task.type]?.append(task)
+        }
+        for (taskGroupPriority, taskGroup) in tasks {
+            tasks[taskGroupPriority] = taskGroup.sorted(by: { (task1, task2)  in
+                let task1positoon = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
+                let task2position = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
+                return task1positoon < task2position
+            })
         }
     }
 
@@ -54,9 +62,12 @@ class TaskListController: UITableViewController {
 
     // ячейка для строки таблицы
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return getConfiguredTaskCell_constraints(for: indexPath)
+        // ячейка на основе констрейтов
+        //        return getConfiguredTaskCell_constraints(for: indexPath)
+        // ячейка на основе стэка
+        return getConfiguredTaskCell_stack(for: indexPath)
     }
-    
+    //use prototype with constraints
     private func getConfiguredTaskCell_constraints(for indexPath:IndexPath) -> UITableViewCell{
         //загружаем прототип ячейки по идентификатору
         let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellConstraints", for: indexPath)
@@ -85,6 +96,26 @@ class TaskListController: UITableViewController {
         }
         return cell
     }
+    //use prototype with stack
+    private func getConfiguredTaskCell_stack(for indexPath:IndexPath) -> UITableViewCell{
+        let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellStack", for:indexPath) as! TaskCell
+        let taskType = sectionTypesPosition[indexPath.section]
+        guard let currentTask = tasks[taskType]?[indexPath.row] else {
+            return cell
+        }
+        cell.title.text = currentTask.title
+        cell.symbol.text = getSymbolForTask(with: currentTask.status)
+        
+        if currentTask.status == .planned{
+            cell.title.textColor = .black
+            cell.symbol.textColor = .black
+        }else{
+            cell.title.textColor = .lightGray
+            cell.symbol.textColor = .lightGray
+        }
+        return cell
+    }
+
     // возвращаем символ для соответствующего типа задачи
     private func getSymbolForTask(with status: TaskStatus) -> String{
         var resultSymbol: String
