@@ -23,14 +23,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ivo-9C-Pne">
-                                            <rect key="frame" x="352.5" y="11" width="41.5" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bEB-N2-g55">
-                                            <rect key="frame" x="20" y="11" width="322.5" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="253" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bEB-N2-g55">
+                                            <rect key="frame" x="20" y="11" width="41.5" height="21"/>
                                             <accessibility key="accessibilityConfiguration">
                                                 <accessibilityTraits key="traits" selected="YES" staticText="YES"/>
                                             </accessibility>
@@ -38,17 +32,21 @@
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ivo-9C-Pne">
+                                            <rect key="frame" x="71.5" y="11" width="322.5" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="bottomMargin" secondItem="Ivo-9C-Pne" secondAttribute="bottom" id="BQH-A8-Hi3"/>
+                                        <constraint firstItem="Ivo-9C-Pne" firstAttribute="leading" secondItem="bEB-N2-g55" secondAttribute="trailing" constant="10" id="E4G-Rg-JQF"/>
                                         <constraint firstItem="bEB-N2-g55" firstAttribute="top" secondItem="W5l-6V-Lq0" secondAttribute="topMargin" id="Q8j-Nh-vtp"/>
                                         <constraint firstItem="Ivo-9C-Pne" firstAttribute="top" secondItem="W5l-6V-Lq0" secondAttribute="topMargin" id="Zhn-Q8-UPU"/>
                                         <constraint firstItem="bEB-N2-g55" firstAttribute="centerY" secondItem="Ivo-9C-Pne" secondAttribute="centerY" id="fI7-in-ISM"/>
                                         <constraint firstItem="bEB-N2-g55" firstAttribute="leading" secondItem="W5l-6V-Lq0" secondAttribute="leadingMargin" id="k4b-Mc-XMR"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="Ivo-9C-Pne" secondAttribute="trailing" id="l5z-9f-0Ua"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="bEB-N2-g55" secondAttribute="bottom" id="ukV-t2-jgv"/>
-                                        <constraint firstItem="Ivo-9C-Pne" firstAttribute="leading" secondItem="bEB-N2-g55" secondAttribute="trailing" constant="10" id="zDm-se-fwc"/>
-                                        <constraint firstItem="bEB-N2-g55" firstAttribute="bottom" secondItem="W5l-6V-Lq0" secondAttribute="bottomMargin" id="zjs-h9-AbJ"/>
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -62,23 +60,29 @@
                                         <stackView opaque="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="PvE-c1-Hnl">
                                             <rect key="frame" x="20" y="0.0" width="394" height="43"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="41.5" translatesAutoresizingMaskIntoConstraints="NO" id="Oxw-xT-d3M">
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="41.5" translatesAutoresizingMaskIntoConstraints="NO" id="Oxw-xT-d3M">
                                                     <rect key="frame" x="0.0" y="0.0" width="41.5" height="43"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="20" id="13c-oT-uti"/>
+                                                        <constraint firstAttribute="height" constant="43" id="AAo-Dv-dtp"/>
+                                                        <constraint firstAttribute="width" constant="41.5" id="m73-I3-Qmr"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="323.5" translatesAutoresizingMaskIntoConstraints="NO" id="tsD-gf-PTC">
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="323.5" translatesAutoresizingMaskIntoConstraints="NO" id="tsD-gf-PTC">
                                                     <rect key="frame" x="51.5" y="0.0" width="342.5" height="43"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="43" id="6XK-UW-5nL"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="tsD-gf-PTC" firstAttribute="top" secondItem="Oxw-xT-d3M" secondAttribute="bottom" constant="-43" id="SFc-AU-3qw"/>
                                                 <constraint firstItem="tsD-gf-PTC" firstAttribute="centerY" secondItem="Oxw-xT-d3M" secondAttribute="centerY" id="shg-kK-OH5"/>
-                                                <constraint firstItem="tsD-gf-PTC" firstAttribute="leading" secondItem="Oxw-xT-d3M" secondAttribute="trailing" constant="10" id="wap-wh-xhW"/>
                                             </constraints>
                                         </stackView>
                                     </subviews>

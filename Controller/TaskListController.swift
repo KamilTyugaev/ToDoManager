@@ -11,7 +11,18 @@ class TaskListController: UITableViewController {
     // хранилище задач
     var tasksStorage:TasksStorageProtocol = TasksStorage()
     //коллекция задач
-    var tasks: [TaskPriority:[TaskProtocol]] = [:]
+    var tasks: [TaskPriority:[TaskProtocol]] = [:]{
+        didSet {
+            for (tasksGroupPriority, tasksGroup) in tasks {
+                tasks[tasksGroupPriority] = tasksGroup.sorted{ task1, task2  in
+                    let task1position = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
+                    let task2position = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
+                    return task1position < task2position
+                    
+                }
+            }
+        }
+    }
     // порядок отображения секций по типам
     // индекс в массиве соответствует индексу секции в таблице
     var sectionTypesPosition:[TaskPriority] = [.important, .normal]
@@ -22,8 +33,8 @@ class TaskListController: UITableViewController {
         //загрузка задач
         loadTasks()
         // self.clearsSelectionOnViewWillAppear = false
-
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        // кнопка активации режима редактирования
+         self.navigationItem.leftBarButtonItem = self.editButtonItem
     }
     private func loadTasks(){
         // подготовка коллекции с задачами
@@ -34,13 +45,6 @@ class TaskListController: UITableViewController {
         // загрузка и разбор задач из хранилища
         tasksStorage.loadTasks().forEach { task in
             tasks[task.type]?.append(task)
-        }
-        for (taskGroupPriority, taskGroup) in tasks {
-            tasks[taskGroupPriority] = taskGroup.sorted(by: { (task1, task2)  in
-                let task1positoon = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
-                let task2position = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
-                return task1positoon < task2position
-            })
         }
     }
 
@@ -63,9 +67,9 @@ class TaskListController: UITableViewController {
     // ячейка для строки таблицы
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // ячейка на основе констрейтов
-        //        return getConfiguredTaskCell_constraints(for: indexPath)
+        return getConfiguredTaskCell_constraints(for: indexPath)
         // ячейка на основе стэка
-        return getConfiguredTaskCell_stack(for: indexPath)
+//        return getConfiguredTaskCell_stack(for: indexPath)
     }
     //use prototype with constraints
     private func getConfiguredTaskCell_constraints(for indexPath:IndexPath) -> UITableViewCell{
@@ -133,13 +137,106 @@ class TaskListController: UITableViewController {
         var title: String?
         let tasksType = sectionTypesPosition[section]
         if tasksType == .important {
-            title = "Важные"
+            title = "Important"
         } else if tasksType == .normal {
-            title = "Текущие"
+            title = "Normal"
         }
         return title
     }
-
+    
+    //Разрабатываем функционал(для изменения с "планированного" на "выполнено") при нажатии на cell
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 1. Проверяем существование задачи
+        let tasksType = sectionTypesPosition[indexPath.section]
+        guard let _ = tasks[tasksType]?[indexPath.row] else {
+            return
+        }
+        //2 Убеждаемся что задача является невыполненной
+        guard tasks[tasksType]?[indexPath.row].status == .planned else {
+            //снимаем выделение строки
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+        //отмечаем задачу как выполненную
+        tasks[tasksType]![indexPath.row].status = .completed
+        //перезагружаем секцию таблицы
+        tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+    }
+    //Разрабатываем функционал(для изменения с "выполнено" на "планированно") при свайпе направо
+     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // 1. Проверяем существование задачи
+        let tasksType = sectionTypesPosition[indexPath.section]
+        guard let _ = tasks[tasksType]?[indexPath.row] else {
+            return nil
+        }
+        //2 Убеждаемся что задача является выполненной
+        guard tasks[tasksType]![indexPath.row].status == .completed  else {
+            //снимаем выделение строки
+            return nil
+        }
+        
+        let actionSwipeInstance = UIContextualAction(style: .destructive, title: "Cancel completed") { _, _,_  in
+            self.tasks[tasksType]![indexPath.row].status = .planned
+            self.tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+        }
+        return UISwipeActionsConfiguration(actions: [actionSwipeInstance])
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.row == 0{
+            return false
+        }
+        return true
+    }
+    // Первая строка каждой секции таблицы имеет стиль .insert, а остальные .delete:
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        if indexPath.row == 0{
+            return .insert
+        }
+        return.delete
+    }
+    //item Edit при нажатии позволяет изменять данные таблицы(здесь мы удаляем задачу)
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let taskType = sectionTypesPosition[indexPath.section]
+        // удаляем задачу
+        tasks[taskType]?.remove(at: indexPath.row)
+        // удаляем строку, соответствующую задаче
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    //item Edit при нажатии позволяет изменять данные таблицы(здесь мы сортируем задачу куда хотим)
+   // Разрешить перемещать все строки, кроме первой в первой секции.
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.section == 0 && indexPath.row == 0{ // это условие для первой строки а  просто return true
+           return false
+        }
+        return true
+    }
+//    Метод UITableViewDataSource.tableView(_:moveRowAt:to:)
+//    Вызывается при изменении позиции строки с moveRowAt на to.
+   // ● to: IndexPath – конечная позиция строки.
+    
+    // ручная сортировка списка задач
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        // секция, из которой происходит перемещение
+        let taskTypeFrom = sectionTypesPosition[sourceIndexPath.section]
+        // секция, в которую происходит перемещение
+        let taskTypeTo = sectionTypesPosition[destinationIndexPath.section]
+        //безопасно извлекаем задачу, тем самым копируем ее
+        guard let moveTask = tasks[taskTypeFrom]?[sourceIndexPath.row] else {
+            return
+        }
+        
+        tasks[taskTypeFrom]!.remove(at: sourceIndexPath.row)
+        // вставляем задачу на новую позицию
+        tasks[taskTypeTo]!.insert(moveTask, at: destinationIndexPath.row)
+        // если секция изменилась, изменяем тип задачи в соответствии с новой позицией
+        if taskTypeFrom != taskTypeTo{
+            tasks[taskTypeTo]?[destinationIndexPath.row].type = taskTypeTo
+        }
+        // обновляем данные
+        tableView.reloadData()
+    }
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
