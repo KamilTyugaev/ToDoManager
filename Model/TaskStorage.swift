@@ -1,34 +1,122 @@
+////
+////  TaskStorage.swift
+////  ToDoManager
+////
+////  Created by IosDeveloper on 18.12.2021.
+////
 //
-//  TaskStorage.swift
-//  ToDoManager
+//import UIKit
 //
-//  Created by IosDeveloper on 18.12.2021.
+//// Протокол, описывающий сущность "Хранилище задач"
+//protocol TasksStorageProtocol {
+//    func loadTasks() -> [TaskProtocol]
+//    func saveTasks(_ tasks:[TaskProtocol])
+//}
 //
+//// Сущность "Хранилище задач"
+//class TasksStorage: TasksStorageProtocol {
+//    //ссылка на хранилище
+//    private var storage = UserDefaults.standard
+//    // Ключ, по которому будет происходить сохранение и загрузка хранилища из User Defaults
+//    private var storageKey: String = "tasks"
+//
+//    //enum  с ключами для записи в UserDefaults
+//    private enum TaskKey: String{
+//        case title
+//        case type
+//        case status
+//    }
+//
+//    func loadTasks() -> [TaskProtocol] {
+//        var resultTask:[TaskProtocol] = []
+//        let tasksFromStorage = storage.array(forKey: storageKey) as? [[String:String]] ?? []
+//        for task in tasksFromStorage{
+//            guard let title = task[TaskKey.title.rawValue],
+//                  let typeRaw = task[TaskKey.type.rawValue],
+//                  let statusRaw = task[TaskKey.status.rawValue] else {
+//                continue
+//            }
+//            let type:TaskPriority = typeRaw == "important" ? .important : .normal
+//            let status:TaskStatus = statusRaw == "planned" ? .planned : .completed
+//            resultTask.append(Task(title: title, type: type, status: status))
+//        }
+//     return resultTask
+//    }
+//
+//    func saveTasks(_ tasks: [TaskProtocol]) {
+//        var arrayForStorage: [[String:String]] = []
+//        tasks.forEach { task in
+//            var newElementForStorage: Dictionary<String,String> = [:]
+//            newElementForStorage[TaskKey.title.rawValue] = task.title
+//            newElementForStorage[TaskKey.type.rawValue] = (task.type == .important) ? "important" : "normal"
+//            newElementForStorage[TaskKey.type.rawValue] = (task.status == .planned) ? "planned" : "completed"
+//            arrayForStorage.append(newElementForStorage)
+//        }
+//        storage.set(arrayForStorage, forKey: storageKey)
+//    }
+//}
+import Foundation
 
-import UIKit
 
 // Протокол, описывающий сущность "Хранилище задач"
 protocol TasksStorageProtocol {
     func loadTasks() -> [TaskProtocol]
-    func saveTasks(_ tasks:[TaskProtocol])
+    func saveTasks(_ tasks: [TaskProtocol])
 }
 
 // Сущность "Хранилище задач"
 class TasksStorage: TasksStorageProtocol {
-    func loadTasks() -> [TaskProtocol] {
-            let testTask:[TaskProtocol] = [
-                Task(title: "write dz popsix", type: .important, status: .completed),
-                Task(title: "Change my", type: .normal, status: .planned),
-                Task(title: "work IOS", type: .normal, status: .planned),
-                Task(title: "Help family", type: .important, status: .planned),
-                Task(title: "Lern English", type: .important, status: .planned),
-                Task(title: "write k", type: .important, status: .completed),
-                Task(title: "eat apple", type: .normal, status: .completed),
-                Task(title: "do clear all tasks in App ToDoManager", type:.important , status: .planned),
-                Task(title: "Пригласить на вечеринку Дольфа, Джеки, Леонардо, Уилла и Брюса", type: .important, status: .completed)
-            ]
-            return testTask
-        }
+    // Ссылка на хранилище
+    private var storage = UserDefaults.standard
+    // Ключ, по которому будет происходить сохранение хранилища
+    var storageKey: String = "tasks"
     
-    func saveTasks(_ tasks: [TaskProtocol]) {}
-}
+    // Перечисление с ключами для записи в User Defaults
+    private enum TaskKey: String{
+        case title
+        case type
+        case status
+    }
+    
+    func loadTasks() -> [TaskProtocol] {
+        var resultTasks: [TaskProtocol] = []
+        let tasksFromStorage = storage.array(forKey: storageKey) as? [[String:String]] ?? []
+        for task in tasksFromStorage {
+            guard let title = task[TaskKey.title.rawValue],
+                  let typeRaw = task[TaskKey.type.rawValue],
+                  let statusRaw = task[TaskKey.status.rawValue] else {
+                continue
+            }
+            let type: TaskPriority = (typeRaw == "important") ? .important : .normal
+            let status: TaskStatus = (statusRaw == "planned") ? .planned : .completed
+            
+            resultTasks.append(Task(title: title, type: type, status: status))
+        }
+        
+        return resultTasks
+    }
+        func saveTasks(_ tasks: [TaskProtocol]) {
+            var arrayForStorage: [[String:String]] = []
+            tasks.forEach { task in
+                var newElementForStorage: Dictionary<String,String> = [:]
+                newElementForStorage[TaskKey.title.rawValue] = task.title
+                newElementForStorage[TaskKey.type.rawValue] = (task.type == .important) ? "important" : "normal"
+                newElementForStorage[TaskKey.status.rawValue] = (task.status == .planned) ? "planned" : "completed"
+                arrayForStorage.append(newElementForStorage)
+            }
+            storage.set(arrayForStorage, forKey: storageKey)
+        }
+    }
+
+//    func saveTasks(_ tasks: [TaskProtocol]) {
+//        var arrayForStorage: [[String:String]] = []
+//        tasks.forEach { task in
+//            var newElementForStorage: Dictionary<String,String> = [:]
+//            newElementForStorage[TaskKey.title.rawValue] = task.title
+//            newElementForStorage[TaskKey.type.rawValue] = (task.type == .important) ? "important" : "normal"
+//            newElementForStorage[TaskKey.status.rawValue] = (task.status == .planned) ? "planned" : "completed"
+//            arrayForStorage.append(newElementForStorage)
+//        }
+//        storage.set(arrayForStorage, forKey: storageKey)
+//    }
+//}

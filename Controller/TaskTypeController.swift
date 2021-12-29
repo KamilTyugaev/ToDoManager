@@ -15,10 +15,13 @@ class TaskTypeController: UITableViewController {
         (type: .important, title: "Important", description: "This type of task is the highest priority for execution. All important tasks are displayed at the top of the task list."),
         (type: .normal, title: "Current", description: "Task with usualy priority."),
     ]
-    var doAfterTypeSelected:((TaskPriority) -> Void)?
+
     // 3. выбранный приоритет
     var selectedType: TaskPriority = .normal
         
+    //обработчик выбора типа
+    var doAfterTypeSelected:((TaskPriority) -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // 1. получение значение типа UINib, соответствующее xib-файлу кастом- ной ячейки
