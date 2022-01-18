@@ -277,5 +277,4 @@ class TaskListController: UITableViewController {
         }
     }
 
-
 }
